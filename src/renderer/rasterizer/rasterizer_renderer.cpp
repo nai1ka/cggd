@@ -44,16 +44,16 @@ void cg::renderer::rasterization_renderer::render()
         return std::make_pair(processed, data);
     };
 	rasterizer->pixel_shader = [](cg::vertex data, float z) {
-		// Use material properties from vertex to compute the final color
+
 		return cg::color{data.diffuse_r, data.diffuse_g, data.diffuse_b};
 	};
 
     auto start = std::chrono::high_resolution_clock::now();
     
-    // Replace clear_render_target with gradient version
+
     rasterizer->clear_render_target_with_gradient(
-        cg::unsigned_color{18, 19, 57},  // Cornflower blue for top
-        cg::unsigned_color{11, 100, 100}     // Midnight blue for bottom
+        cg::unsigned_color{18, 19, 57}, 
+        cg::unsigned_color{11, 100, 100}   
     );
     
     auto stop = std::chrono::high_resolution_clock::now();
