@@ -18,6 +18,7 @@ cg::world::model::~model() {}
 void cg::world::model::load_obj(const std::filesystem::path& model_path)
 {
 	tinyobj::ObjReaderConfig readerConfig;
+	std::cout<< model_path.parent_path().string()<<std::endl;
 	readerConfig.mtl_search_path = model_path.parent_path().string();
 	readerConfig.triangulate = true;
 
@@ -35,6 +36,16 @@ void cg::world::model::load_obj(const std::filesystem::path& model_path)
 
 	allocate_buffers(shapes);
 	fill_buffers(shapes, attrib, materials, model_path.parent_path());
+
+	  // Add debug prints
+	  for (const auto& material : materials) {
+        std::cout << "Material: " << material.name << std::endl;
+        std::cout << "Diffuse texture: " << material.diffuse_texname << std::endl;
+        std::cout << "Diffuse color: " << material.diffuse[0] << "," 
+                  << material.diffuse[1] << "," 
+                  << material.diffuse[2] << std::endl;
+    }
+    
 }
 
 void model::allocate_buffers(const std::vector<tinyobj::shape_t>& shapes)

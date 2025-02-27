@@ -148,6 +148,7 @@ namespace cg
 		float emissive_r;
 		float emissive_g;
 		float emissive_b;
+		size_t material_id;
 	};
 
 }// namespace cg

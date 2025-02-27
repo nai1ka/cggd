@@ -34,27 +34,29 @@ void cg::renderer::rasterization_renderer::init()
 }
 void cg::renderer::rasterization_renderer::render()
 {
-	float4x4 matrix = mul(
-			camera->get_projection_matrix(),
-			camera->get_view_matrix(),
-			model->get_world_matrix()
-			);
-	rasterizer->vertex_shader = [&](float4 vertex, cg::vertex data){
-		auto processed = mul(matrix, vertex);
-		return std::make_pair(processed, data);
-	};
-	rasterizer->pixel_shader = [](cg::vertex data, float z){
-		return cg::color{
-				data.ambient_r,
-				data.ambient_g,
-				data.ambient_b};
+    float4x4 matrix = mul(
+            camera->get_projection_matrix(),
+            camera->get_view_matrix(),
+            model->get_world_matrix()
+            );
+    rasterizer->vertex_shader = [&](float4 vertex, cg::vertex data){
+        auto processed = mul(matrix, vertex);
+        return std::make_pair(processed, data);
+    };
+	rasterizer->pixel_shader = [](cg::vertex data, float z) {
+		// Use material properties from vertex to compute the final color
+		return cg::color{data.diffuse_r, data.diffuse_g, data.diffuse_b};
 	};
 
-	auto start = std::chrono::high_resolution_clock::now();
-	rasterizer->clear_render_target({0,0,0});
-	auto stop = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<float, std::milli> clear_duration = stop-start;
-	std::cout<<"Clearing took "<<clear_duration.count()<<"ms\n";
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    // Replace clear_render_target with gradient version
+    rasterizer->clear_render_target_with_gradient(
+        cg::unsigned_color{18, 19, 57},  // Cornflower blue for top
+        cg::unsigned_color{11, 100, 100}     // Midnight blue for bottom
+    );
+    
+    auto stop = std::chrono::high_resolution_clock::now();
 
 	start = std::chrono::high_resolution_clock::now();
 	for(size_t shape_id=0; shape_id<model->get_index_buffers().size(); shape_id++){

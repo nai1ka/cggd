@@ -18,6 +18,7 @@ namespace cg::world
 		virtual ~model();
 
 		void load_obj(const std::filesystem::path& model_path);
+	
 
 		const std::vector<std::shared_ptr<cg::resource<cg::vertex>>>& get_vertex_buffers() const;
 		const std::vector<std::shared_ptr<cg::resource<unsigned int>>>& get_index_buffers() const;

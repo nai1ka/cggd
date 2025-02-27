@@ -37,6 +37,11 @@ namespace cg::renderer
 		std::function<std::pair<float4, VB>(float4 vertex, VB vertex_data)> vertex_shader;
 		std::function<cg::color(const VB& vertex_data, const float z)> pixel_shader;
 
+		void clear_render_target_with_gradient(
+			const RT& color_top,
+			const RT& color_bottom,
+			const float in_depth = DEFAULT_DEPTH);
+
 	protected:
 		std::shared_ptr<cg::resource<VB>> vertex_buffer;
 		std::shared_ptr<cg::resource<unsigned int>> index_buffer;
@@ -177,5 +182,34 @@ namespace cg::renderer
 		}
 		return depth_buffer->item(x, y) > z;
 	}
+
+	template<typename VB, typename RT>
+inline void rasterizer<VB, RT>::clear_render_target_with_gradient(
+    const RT& color_top,
+    const RT& color_bottom,
+    const float in_depth)
+{
+    for(size_t y = 0; y < height; y++)
+    {
+        float t = static_cast<float>(y) / static_cast<float>(height - 1);
+        RT interpolated_color;
+        
+        // Interpolate each color component
+        interpolated_color.r = static_cast<uint8_t>((1.0f - t) * color_top.r + t * color_bottom.r);
+        interpolated_color.g = static_cast<uint8_t>((1.0f - t) * color_top.g + t * color_bottom.g);
+        interpolated_color.b = static_cast<uint8_t>((1.0f - t) * color_top.b + t * color_bottom.b);
+        
+        for(size_t x = 0; x < width; x++)
+        {
+            render_target->item(x, y) = interpolated_color;
+        }
+    }
+
+    // Clear depth buffer
+    for(size_t i = 0; i < depth_buffer->get_number_of_elements(); i++)
+    {
+        depth_buffer->item(i) = in_depth;
+    }
+}
 
 }// namespace cg::renderer
