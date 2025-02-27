@@ -20,7 +20,7 @@ jobs:
           .\build\Release\Rasterization.exe --model_path models\cube.obj --result_path rasterization_cube.png
           .\build\Release\Rasterization.exe --model_path models\z_test.obj --result_path rasterization_z_test.png
           .\build\Release\Rasterization.exe --model_path models\CornellBox-Original.obj --result_path rasterization_CornellBox-Original.png
-          .\build\Release\Rasterization.exe--model_path .\models\jet.obj --result_path jet.png  --camera_position -600,-400,-100 --camera_phi 140 --camera_theta -90
+          .\build\Release\Rasterization.exe --model_path models\jet.obj --result_path jet.png  --camera_position -600,-400,-100 --camera_phi 140 --camera_theta -90
       - name: Upload rasterization images
         uses: actions/upload-artifact@v4
         with:
