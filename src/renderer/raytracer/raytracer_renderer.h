@@ -28,5 +28,11 @@ namespace cg::renderer
 		void init_camera();
 		void init_lights();
 		void init_shadow_raytracer();
+		void setup_shadow_raytracer();
+		void setup_main_raytracer();
+		std::tuple<std::mt19937, std::uniform_real_distribution<float>> create_random_generator();
+		void setup_closest_hit_shader(std::mt19937& random_generator, 
+								   std::uniform_real_distribution<float>& uniform_distribution);
+		void trace_rays_and_save();
 	};
 }// namespace cg::renderer
