@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-void cg::renderer::ray_tracing_renderer::init()
+void cg::renderer::ray_tracing_renderer::init_raytracer()
 {
   raytracer = std::make_shared<
       cg::renderer::raytracer<cg::vertex, cg::unsigned_color>>();
@@ -15,13 +15,23 @@ void cg::renderer::ray_tracing_renderer::init()
       settings->width, settings->height);
 
   raytracer->set_render_target(render_target);
+}
 
+void cg::renderer::ray_tracing_renderer::init_model()
+{
   model = std::make_shared<cg::world::model>();
   model->load_obj(settings->model_path);
 
+  // Initialize both raytracers with model data
   raytracer->set_vertex_buffers(model->get_vertex_buffers());
   raytracer->set_index_buffers(model->get_index_buffers());
+  
+  shadow_raytracer->set_vertex_buffers(model->get_vertex_buffers());
+  shadow_raytracer->set_index_buffers(model->get_index_buffers());
+}
 
+void cg::renderer::ray_tracing_renderer::init_camera()
+{
   camera = std::make_shared<cg::world::camera>();
   camera->set_height(static_cast<float>(settings->height));
   camera->set_width(static_cast<float>(settings->width));
@@ -35,12 +45,27 @@ void cg::renderer::ray_tracing_renderer::init()
   camera->set_angle_of_view(settings->camera_angle_of_view);
   camera->set_z_near(settings->camera_z_near);
   camera->set_z_far(settings->camera_z_far);
+}
 
+void cg::renderer::ray_tracing_renderer::init_lights()
+{
   lights.push_back({float3{0.f, 1.58f, -0.03f}, float3{0.78f, 0.78f, 0.78f}});
+}
+
+void cg::renderer::ray_tracing_renderer::init_shadow_raytracer()
+{
   shadow_raytracer = std::make_shared<
       cg::renderer::raytracer<cg::vertex, cg::unsigned_color>>();
-  shadow_raytracer->set_vertex_buffers(model->get_vertex_buffers());
-  shadow_raytracer->set_index_buffers(model->get_index_buffers());
+  // Note: Vertex and index buffers are set in init_model to avoid duplication
+}
+
+void cg::renderer::ray_tracing_renderer::init()
+{
+  init_raytracer();
+  init_shadow_raytracer();
+  init_model();
+  init_camera();
+  init_lights();
 }
 
 void cg::renderer::ray_tracing_renderer::destroy() {}
