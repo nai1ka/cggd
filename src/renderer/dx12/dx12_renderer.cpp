@@ -645,6 +645,8 @@ void cg::renderer::dx12_renderer::populate_command_list()
 
 	command_list->SetGraphicsRootSignature(root_signature.Get());
 
+
+
 	ID3D12DescriptorHeap* active_heaps[] = {cbv_srv_heap.get()};
 	command_list->SetDescriptorHeaps(1, active_heaps);
 	command_list->SetGraphicsRootDescriptorTable(0, cbv_srv_heap.get_gpu_descriptor_handle(0));
@@ -661,7 +663,7 @@ void cg::renderer::dx12_renderer::populate_command_list()
 	auto rtv_handle = rtv_heap.get_cpu_descriptor_handle(frame_index);
 	command_list->OMSetRenderTargets(1, &rtv_handle, FALSE, nullptr);
 
-	float background_color[] = {0.0f, 0.0f, 0.0f, 1.0f};
+	float background_color[] = {0.47f, 0.69f, 0.811f, 1.0f};
 	command_list->ClearRenderTargetView(rtv_handle, background_color, 0, nullptr);
 
 	command_list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
